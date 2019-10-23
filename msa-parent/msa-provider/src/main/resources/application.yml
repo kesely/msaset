@@ -1,0 +1,37 @@
+server:
+  port: 8002
+
+mybatis:
+  config-location: "classpath:mybatis/mybatis.cfg.xml"        # mybatis配置文件所在路径
+  mapper-locations:
+    - "classpath:mybatis/mapper/**/*.xml"                     # mapper映射文件
+  type-aliases-package: com.lzc.springcloud.entity            # 别名类所在包
+
+spring:
+  application:
+    name: msa-provider                          #微服务的名字
+  datasource:
+    driver-class-name: org.gjt.mm.mysql.Driver                # mysql驱动包
+    type: com.alibaba.druid.pool.DruidDataSource              # 当前数据源操作类型
+    url: "jdbc:mysql://localhost:3306/msa"                    # 数据库名称
+    username: root
+    password: root
+    dbcp2:
+      initial-size: 5                                         # 初始化连接数
+      max-total: 5                                            # 最大连接数
+      max-wait-millis: 200                                    # 等待连接获取的最大超时时间
+      min-idle: 5                                             # 数据库连接池的最小维持连接数
+
+#启动后注册到eureka中，配置注册地址
+eureka:
+  client:
+    service-url:
+      #defaultZone: http://localhost:9001/eureka
+      defaultZone: http://eureka9001.com:9001/eureka/,http://eureka9002.com:9002/eureka/,http://eureka9003.com:9003/eureka/
+  instance:                                                 #实例名称，显示在eureka中的名字
+    instance-id: msa-provider8002
+    prefer-ip-address: true
+    # 心跳检测检测与续约时间
+    # 测试时将值设置设置小些，保证服务关闭后注册中心能及时踢出服务
+    lease-renewal-interval-in-seconds: 2                    #每间隔1s，向服务端发送一次心跳，证明自己依然”存活“
+    lease-expiration-duration-in-seconds: 5                 #告诉服务端，如果我2s之内没有给你发心跳，就代表我“死”了，将我踢出掉。
